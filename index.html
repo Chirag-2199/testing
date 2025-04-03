@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubbles App - Testing</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            border: 2px solid #333;
+            background-color: white;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        button:first-child {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button:first-child:hover {
+            background-color: #218838;
+        }
+
+        button:last-child {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        button:last-child:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="600" height="300"></canvas>
+    <div class="buttons">
+        <button onclick="startAnimation()">Hit</button>
+        <button onclick="resetCanvas()">Reset</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let circleColor, arrowX, animationFrame;
+
+        function getRandomColor() {
+            return `hsl(${Math.random() * 360}, 100%, 60%)`;
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(100, canvas.height / 2, 30, 0, Math.PI * 2);
+            ctx.fillStyle = circleColor;
+            ctx.fill();
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(arrowX, canvas.height / 2);
+            ctx.lineTo(arrowX - 20, canvas.height / 2 - 10);
+            ctx.lineTo(arrowX - 20, canvas.height / 2 + 10);
+            ctx.closePath();
+            ctx.fillStyle = "black";
+            ctx.fill();
+        }
+
+        function startAnimation() {
+            function animate() {
+                if (arrowX > 110) {
+                    arrowX -= 5;
+                    drawScene();
+                    animationFrame = requestAnimationFrame(animate);
+                } else {
+                    cancelAnimationFrame(animationFrame);
+                    circleColor = getRandomColor(); // Change color on hit
+                    drawScene();
+                }
+            }
+            animate();
+        }
+
+        function resetCanvas() {
+            circleColor = getRandomColor();
+            arrowX = canvas.width - 100;
+            drawScene();
+        }
+
+        resetCanvas();
+    </script>
+</body>
+
+</html>
